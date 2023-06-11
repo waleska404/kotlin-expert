@@ -1,4 +1,4 @@
-# KOTLIN EXPERT NOTES
+# KOTLIN NOTES
 
 1. INTRO
 	- Tipado estático: el compilador sabe en todo momento cuales son los tipos de las variables con las que está tratando. Aún así el lenguaje no es muy verboso, puede incluso parecer de tipado dinámico, como javascript o groovy, pero no.
