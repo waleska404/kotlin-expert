@@ -53,19 +53,19 @@
 		se utiliza la palabra reservada `field`. Por ejemplo:
 
 		```
-			open class Person(name: String, val age: Int) {
-				var name = name
-				get() = "Hello $field"
-				set(value) {
-					if(value != field) {
-						field = value
-					}
+		open class Person(name: String, val age: Int) {
+			var name = name
+			get() = "Hello $field"
+			set(value) {
+				if(value != field) {
+					field = value
 				}
 			}
+		}
 		```
 
-		- Properties sin backing field:
-		Podemos tener properties sin backing field, esto lo hacemos dandole su valor solo a partir del getter. Esto nos puede servir para que el valor de esta propertie sea calculado cada vez que se pida. Lo podríamos hacer también con una función, pero la solución de property sin backing field es más avanzada:
+- Properties sin backing field: Podemos tener properties sin backing field, esto lo hacemos dandole su valor solo a partir del getter. Esto nos puede servir para que el valor de esta propertie sea calculado cada vez que se pida. Lo podríamos hacer también con una función, pero la solución de property sin backing field es más avanzada:
+
 		```
 		class AppState {
     		val text = mutableStateOf("")
@@ -74,29 +74,29 @@
 		}
 		```	
 
-## - Interfaces:
-		- Nos permiten definir un comportamiento que luego tendrán que implementar otros componentes. Con la salvedad de que en las interfaces de Kotlin podemos añadir código, aunque con ciertas restricciones. 
+## Interfaces:
+- Nos permiten definir un comportamiento que luego tendrán que implementar otros componentes. Con la salvedad de que en las interfaces de Kotlin podemos añadir código, aunque con ciertas restricciones. 
 
-		- En una interfaz podemos definir comportamiento pero en ningún caso podemos almacenar estado. Esto quiere decir que no podemos definir una property que necesite un backing field. Pero si que podemos definir properties que luego tengan que implementar las clases que extiendan esta interfaz, y usar esas properties en el código de la propia interfaz.
+- En una interfaz podemos definir comportamiento pero en ningún caso podemos almacenar estado. Esto quiere decir que no podemos definir una property que necesite un backing field. Pero si que podemos definir properties que luego tengan que implementar las clases que extiendan esta interfaz, y usar esas properties en el código de la propia interfaz.
 
-		```
-		interface CanWalk {
-			fun doStep()
+	```
+	interface CanWalk {
+		fun doStep()
 
-			fun walk(steps: Int) {
-				repeat(steps) { doStep() }
-			}
+		fun walk(steps: Int) {
+			repeat(steps) { doStep() }
 		}
+	}
 
-		class Dog : CanWalk {
-			override fun doStep() {
-				TODO("Not implemented yet")
-			}
+	class Dog : CanWalk {
+		override fun doStep() {
+			TODO("Not implemented yet")
 		}
+	}
 
-		val dog = Dog()
-		dog.walk(20)
-		```	
+	val dog = Dog()
+	dog.walk(20)
+	```	
 
 ## - Data Classes:
 		- Son las que conforman una estructura de datos (vs las otras clases que son las conformaban un objeto). Estas nos permitirán trabajar con estructuras de datos de forma mucho más sencilla. Si añadimos la palabra reservada `data` delante de nuestra clase, añadirá funcionalidad extra, que nos va a permitir trabajar mejor con estos tipos de clases de datos.
