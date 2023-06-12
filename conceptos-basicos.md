@@ -97,55 +97,54 @@
 	dog.walk(20)
 	```	
 
-## - Data Classes:
-		- Son las que conforman una estructura de datos (vs las otras clases que son las conformaban un objeto). Estas nos permitirán trabajar con estructuras de datos de forma mucho más sencilla. Si añadimos la palabra reservada `data` delante de nuestra clase, añadirá funcionalidad extra, que nos va a permitir trabajar mejor con estos tipos de clases de datos.
+## Data Classes:
+- Son las que conforman una estructura de datos (vs las otras clases que son las conformaban un objeto). Estas nos permitirán trabajar con estructuras de datos de forma mucho más sencilla. Si añadimos la palabra reservada `data` delante de nuestra clase, añadirá funcionalidad extra, que nos va a permitir trabajar mejor con estos tipos de clases de datos.
 
-		- En Kotlin, igual que en Java, todos los objetos tienen su función `equals` que podemos sobreescribit en cualquier momento.
+- En Kotlin, igual que en Java, todos los objetos tienen su función `equals` que podemos sobreescribit en cualquier momento.
 
-		- El comparador equals de una clase, comprobará si los atributos de esa clase son iguales, y retornará `true` en ese caso, SI la class la hemos declarado con la palabra reservada `data`.
+- El comparador equals de una clase, comprobará si los atributos de esa clase son iguales, y retornará `true` en ese caso, SI la class la hemos declarado con la palabra reservada `data`.
 
-		```
-		// en este caso la variable sonIguales tendrá valor false
-		class Person(val name: String, val age: Int)
+	```
+	// en este caso la variable sonIguales tendrá valor false
+	class Person(val name: String, val age: Int)
 
-		val p1 = Person("Maik", 30)
-		val p2 = Person("Maik", 30)
+	val p1 = Person("Maik", 30)
+	val p2 = Person("Maik", 30)
 
-		val sonIguales = p1 == p2
+	val sonIguales = p1 == p2
 
-		// en este caso la variable sonIguales tendrá valor true
-		data class Person(val name: String, val age: Int)
+	// en este caso la variable sonIguales tendrá valor true
+	data class Person(val name: String, val age: Int)
 
-		val p1 = Person("Maik", 30)
-		val p2 = Person("Maik", 30)
+	val p1 = Person("Maik", 30)
+	val p2 = Person("Maik", 30)
 
-		val sonIguales = p1 == p2
+	val sonIguales = p1 == p2
+	```
 
-		```
+- Las Data Classes tienen sobreescrito el método `toString`. Es más usable.
+		
+- Con el triple igual `===` se compara si los objetos son el mismo (si son la misma instancia). Esto sirve para clases y para data clases.
 
-		- Las Data Classes tienen sobreescrito el método `toString`. Es más usable.
+- En las Data Classes tenemos un método `copy`. Lo podemos utilizar para copiar una instancia y cambiar sólo uno de los valores:
 
-		- Con el triple igual `===` se compara si los objetos son el mismo (si son la misma instancia). Esto sirve para clases y para data clases.
+	```
+	val p3 = p2.copy(name = "Lina")
+	```	
+	
+	La función `copy` la necesitamos porque si estamos trabajando con inmutabilidad, realmente no podríamos modificar un valor solo dentro de una estructura de datos, sino que la única manera sería hacer una copia igual, menos el valor que queremos cambiar.
 
-		- En las Data Classes tenemos un método `copy`. Lo podemos utilizar para copiar una instancia y cambiar sólo uno de los valores:
+- En las Data Classes también tenemos la desestructuración. Podemos partir el objeto Data Class en variables que se corresponden con los que recibe el constructor como argumento.
 
-		```
-		val p3 = p2.copy(name = "Lina")
+	```
+	data class Person(val name: String, val age: Int)
 
-		```	
-		La función `copy` la necesitamos porque si estamos trabajando con inmutabilidad, realmente no podríamos modificar un valor solo dentro de una estructura de datos, sino que la única manera sería hacer una copia igual, menos el valor que queremos cambiar.
+	val p1 = Person("Maik", 30)
 
-		- En las Data Classes también tenemos la desestructuración. Podemos partir el objeto Data Class en variables que se corresponden con los que recibe el constructor como argumento.
+	val (a, b) = p1 // a = "Maik" y b = 30
+	val (_, c) = p1 // _ si queremos omitir algún valor
+	val (d) = p1	// podemos omitir valores desde el final: d = "Maik"
 
-		```
-		data class Person(val name: String, val age: Int)
+	```		
 
-		val p1 = Person("Maik", 30)
-
-		val (a, b) = p1 // a = "Maik" y b = 30
-		val (_, c) = p1 // _ si queremos omitir algún valor
-		val (d) = p1	// podemos omitir valores desde el final: d = "Maik"
-
-		```		
-
-		- En una Data Class no puede haber argumentos en el constructor que a su vez no sean properties. Esto porque sinó no puede calcular correctamente el `equals` o el `toString`.
+- En una Data Class no puede haber argumentos en el constructor que a su vez no sean properties. Esto porque sinó no puede calcular correctamente el `equals` o el `toString`.
