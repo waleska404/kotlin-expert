@@ -49,30 +49,29 @@
 	```
 	* `val` si no vamos a modificar el valor de la property, en caso contrario la declariamos con `var`
 
-- Tienen un getter y un setter por defecto que se puede sobreescribir. Cuando los sobreescribimos para acceder al valor de la property
-		se utiliza la palabra reservada `field`. Por ejemplo:
+- Tienen un getter y un setter por defecto que se puede sobreescribir. Cuando los sobreescribimos para acceder al valor de la property se utiliza la palabra reservada `field`. Por ejemplo:
 
-		```
-		open class Person(name: String, val age: Int) {
-			var name = name
-			get() = "Hello $field"
-			set(value) {
-				if(value != field) {
-					field = value
-				}
+	```
+	open class Person(name: String, val age: Int) {
+		var name = name
+		get() = "Hello $field"
+		set(value) {
+			if(value != field) {
+				field = value
 			}
 		}
-		```
+	}
+	```
 
 - Properties sin backing field: Podemos tener properties sin backing field, esto lo hacemos dandole su valor solo a partir del getter. Esto nos puede servir para que el valor de esta propertie sea calculado cada vez que se pida. Lo podríamos hacer también con una función, pero la solución de property sin backing field es más avanzada:
 
-		```
-		class AppState {
-    		val text = mutableStateOf("")
-    		val buttonEnabled: Boolean
-        		get() = text.value.isNotEmpty() 
-		}
-		```	
+	```
+	class AppState {
+    	val text = mutableStateOf("")
+    	val buttonEnabled: Boolean
+        	get() = text.value.isNotEmpty() 
+	}
+	```	
 
 ## Interfaces:
 - Nos permiten definir un comportamiento que luego tendrán que implementar otros componentes. Con la salvedad de que en las interfaces de Kotlin podemos añadir código, aunque con ciertas restricciones. 
