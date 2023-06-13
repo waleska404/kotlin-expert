@@ -148,3 +148,109 @@
 	```		
 
 - En una Data Class no puede haber argumentos en el constructor que a su vez no sean properties. Esto porque sinó no puede calcular correctamente el `equals` o el `toString`.
+
+## Colecciones:
+
+- Las listas por defecto son inmutables. Si queremos crear una lista a partir de otra, lo que podemos hacer es una copia:
+
+	```
+	val list: List<Int> = listOf(1, 3, 78, 2) // creación de una lista de integers
+	val emptyList: List<Int> = emptyList() // creación de una lista vacía
+
+	val list2 = emptyList + 10 // list2 = [10]
+	```
+
+- Si queremos trabajar con listas mutables tenemos la clase: `MutableList`:
+
+	```
+	val list: MutableList<Int> = mutableListOf(3, 5, 98)
+	list.add(54)
+	```
+
+- También disponemos de la clase `Set`. Son conjuntos de elementos no repetidos, por tanto si intentas añadir un elemento que ya existía, no se añade. 
+
+	```
+	val intSet = setOf(6,4,29)  
+	```
+
+Es importante tener en cuenta que si lo que contiene el set es una `Data Class` va a entender como elementos iguales aquellos que tengan los mismos valores en sus propiedades. Pero si lo que contiene el set son objetos, es decir `Class`, el equals no funciona de esta manera, y aunque no dos objetos tengan los mismos valores en sus propiedades, serán tratados como objetos diferentes ya que son instancias diferentes.
+
+- También tenemos mapas: `Map`.  
+
+	```
+	val map = mapOf<Int, String>(
+		1 to "first",
+		2 to "second"
+	)
+	```
+
+- A las colecciones le podemos aplicar operadores funcionales:
+	
+	```
+	val list = listOf(
+		Note("Title 1", "Desc1"),
+		Note("Title 2", "Desc2"),
+		Note("Title 3", "Desc3"),
+		Note("Title 4", "Desc4"),
+	)
+
+	val result = list
+		.filterNot { it.title.contains('2')}
+		.sortedBy { it.title }
+		.map { it.title }
+	``` 
+
+## Enums:
+
+- Los `Enums` nos permiten definir un tipo de datos que van a tener un número predefinido de valores constantes.
+
+	```
+	enum class Shape {
+		SQUARE, RECTANGLE, CIRCLE, OVAL, TRIANGLE
+	}
+
+	val myShape: Shape = Shape.OVAL
+
+	```
+
+- Todo enumerado tiene un valor ordinal que representa la posición del enumerado. 
+- A partir de la enum class puedes sacar todos los posibles valores con la función `.values()`.
+- También podemos sacar el tipo a partir de un string con la función `.valueOf()`.
+
+	```
+	val myShape: Shape = Shape.OVAL
+	val myOrdinal = myShape.ordinal // myOrdinal = 3
+
+	val allValues = Shape.values() // allValues es una Array con todos los shapes
+	val squareFromString = Shape.valueOf("SQUARE") // tendremos SQUARE de tipo Shape almacenado en squareFromString (tipo Shape)
+
+	```
+
+- También podríamos añadir información extra a cada uno de los elementos de la enum class. Dichos valores son estáticos.
+
+	```
+	enum class Shape(val id: Int, val shapeName: String) {
+		SQUARE(10, "square"), 
+		RECTANGLE(20, "rectangle"), 
+		CIRCLE(30, "circle"), 
+		OVAL(40, "oval"), 
+		TRIANGLE(50, "triangle")
+	}
+
+	val shape = Shape.valueOf("SQUARE")
+
+	shape.id // 10
+	shape.name // square 
+
+	```
+
+
+
+
+
+
+
+
+
+
+
