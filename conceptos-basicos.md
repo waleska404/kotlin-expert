@@ -244,7 +244,28 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 
 	```
 
+## Rangos:
 
+- Los rangos permiten crear colecciones.
+
+	```
+	0..10 -> 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 // colección de Ints
+	(0..10).map { "Item $it" } // colección de Strings
+	(0..10 step 3) // progresión saltando de 3 en 3
+	(10 downTo 0) // progresión inversa
+	(0 until 10) // cerrado por la izquierda, el cero entra, abierto por la derecha, el 10 no entra
+	```
+
+- Hay rangos que son progresiones y rangos que no lo son. La diferencia es que los que son progresiones se tiene claro cuales son los pasos intermedios, a estos, le podemos aplicar operadores funcionales (a los otros no). Los que no son progresiones nos servirán simplemente para acotar. Los que son progresiones son: los enteros, los carácteres, y los long.
+	
+	```
+	(0.0..1.0) // no es progresión
+	(a..f) // si es progresión
+
+	// ejemplo de uso de un rango que no es progresión
+	val myDouble = 0.7f
+	double in (0.0..1.0) // true
+	```	
 
 
 
