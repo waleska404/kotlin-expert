@@ -268,6 +268,68 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	```	
 
 
+## Rangos:
+
+- Algo que diferencia el flujo `if/else if/else` de Kotlin, es que se puede comportar como una expresión, por tanto, le podemos asignar el valor del if a una variable de resultado:
+
+	```
+	val result = if(condition) {
+		"hello"
+	} else {
+		"goodbye"
+	}
+
+	```
+
+- El operador `when` sería el equivalente al `switch` de java. Nos pertmite hacer varias bifurcacioens basadas en el valor de un elemento. Este oprador también puede actuar como una expresión si queremos.
+
+	```
+	val res = when(x) {
+		1, 3, 5 -> "Hello"
+		2 -> "Bye"
+		else -> "end"
+	}
+
+	```	
+También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
+
+```
+	when {
+		x is Int -> {
+			"Hello"
+			count++
+		}
+		y.length > 5 -> x ="Bye"
+		else -> x = end"
+	}
+
+	```	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
