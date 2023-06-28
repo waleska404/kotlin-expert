@@ -268,7 +268,7 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	```	
 
 
-## Rangos:
+## Controles de Flujo:
 
 - Algo que diferencia el flujo `if/else if/else` de Kotlin, es que se puede comportar como una expresión, por tanto, le podemos asignar el valor del if a una variable de resultado:
 
@@ -293,7 +293,7 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	```	
 También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
 
-```
+	```
 	when {
 		x is Int -> {
 			"Hello"
@@ -304,36 +304,4 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 	}
 
 	```	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
