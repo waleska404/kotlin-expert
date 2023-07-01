@@ -293,7 +293,7 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	```	
 También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
 
-	```
+```
 	when {
 		x is Int -> {
 			"Hello"
@@ -302,6 +302,39 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 		y.length > 5 -> x ="Bye"
 		else -> x = end"
 	}
+	```
 
-	```	
+
+
+## Named Arguments y valores por defecto:
+
+- Podemos utilizar valores por defecto en los constructores para tener varias sobrecargas del mismo. De esta manera podemos llamar al constructor omitiendo algunos parámetros.
+
+```
+	data class Note(
+		val title: String,
+		val description: String = "",
+		val type: Type = Type.PHOTO
+	) {
+		enum class Type { PHOTO, AUDIO }
+	}
+
+	Note("Hello") // descripción vacía y tipo PHOTO
+	Note("Hello", "Description") // tipo PHOTO
+	Note("Hello", "Description", Note.Type.AUDIO)
+
+```
+
+- Ahora en caso de que queramos omitir el segundo parametro pero no el tercero, en vez de tener que poner el segundo a mano, podemos utilizar los named arguments.
+```
+	Note(title = "Hello", type = Note.Type.AUDIO)
+```
+
+
+
+
+
+
+
+
 
