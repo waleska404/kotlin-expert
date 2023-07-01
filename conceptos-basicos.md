@@ -292,7 +292,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 
 	```	
 También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
-
 ```
 	when {
 		x is Int -> {
@@ -310,7 +309,7 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 
 - Podemos utilizar valores por defecto en los constructores para tener varias sobrecargas del mismo. De esta manera podemos llamar al constructor omitiendo algunos parámetros.
 
-```
+	```
 	data class Note(
 		val title: String,
 		val description: String = "",
@@ -323,12 +322,12 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 	Note("Hello", "Description") // tipo PHOTO
 	Note("Hello", "Description", Note.Type.AUDIO)
 
-```
+	```
 
 - Ahora en caso de que queramos omitir el segundo parametro pero no el tercero, en vez de tener que poner el segundo a mano, podemos utilizar los named arguments.
-```
+	```
 	Note(title = "Hello", type = Note.Type.AUDIO)
-```
+	```
 
 
 ## Lambdas:
@@ -339,12 +338,12 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 
 - El valor de retorno de una lambda es el valor de retorno de la última expresión, expresión que esté en la última linea.
 
-```
+	```
 	val f: (Int, Int) -> Int = { x, y ->
 		val z = x + y
 		z
 	}
-```
+	```
 O mejor escrito:
 
 ```
@@ -352,37 +351,62 @@ O mejor escrito:
 ```
 
 - Para llamar a una expresión de este tipo:
-```
+	```
 	f(2, 3) // 5
 	f.invoke(2, 3) // 5
-```
+	```
 
 - La misma función se puede escribir de la siguiente forma, donde Kotlin infiere el tipo de salida.
-```
-val f = { x: Int, y: Int -> x + y}
-```
+	```
+		val f = { x: Int, y: Int -> x + y}
+	```
 
 - Podemos pasar esta función por parámetro a otra función:
 
-```
-fun doOperation(x: Int, y: Int, op: (Int, Int) -> Int) = op(x, y)
+	```
+	fun doOperation(x: Int, y: Int, op: (Int, Int) -> Int) = op(x, y)
 
-doOperation(2, 3, f) // 5
-doOperation(5, 7, {x, y -> x * y}) // 35
-doOperation(5, 7) {x, y -> x * y} // 35
-```
+	doOperation(2, 3, f) // 5
+	doOperation(5, 7, {x, y -> x * y}) // 35
+	doOperation(5, 7) {x, y -> x * y} // 35
+	```
 - Cuando el último parámetro de una función es una lambda, podemos sacarla de los paréntesis y poner el bloque de código detrás.
 
 - Dentro de una función cuando utilizamos la palabra reservada `it` se va a referir al único argumento que tenga la función:
-```
-val f2: (Int) -> Int = {it * it}
-```
+	```
+	val f2: (Int) -> Int = {it * it}
+	```
 
 
+## Nullability:
 
+- Kotlin no rechaza los nulos como tal, pero el compilador entiende que existen tipos que pueden tener un nulo, y por tanto, si nos encontramos con ese tipo, estamos obligados a comprobar la nulabilidad. De esta forma tenemos la ventaja de la simplicidad que da el trabajar con nulos, junto con la ventaja de que esos nulos estén controlados o no existan. Esto Kotlin lo hace teniendo tipos nulables y tipos no nulables.
 
+- Para definir un tipo como nublable lo único que tenemos que hacer es añadir una interrogación detrás al tipo.
+	```
+	var x: Int? = 20
+	x = null
+	```
 
+- Pero para hacer operaciones con X tendríamos que hacer la comprobación.
+	```
+	if(x != null) {
+		x.toLong()
+	}
+	```
+- O mejor escrito:
+	```
+	x?.toLong()
+	```
+- Para que en caso de que sea `null` devolver un 0:
+	```
+	x?.toLong() ?: 0L
+	```
 
+- Otra forma de saltarse la comprobación de nulabilidad es la doble exclamación. Con esta le dices que se salte la comprobación porque en teoría ya sabemos que ahí no va a haber un nulo.
+	```
+	x!!.toLong()
+	```
 
 
 
