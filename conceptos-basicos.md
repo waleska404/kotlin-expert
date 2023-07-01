@@ -331,6 +331,75 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 ```
 
 
+## Lambdas:
+
+- A parte de poder pasar funciones por argumento, pueden devolver funciones, pueden existir funciones sin estar dentro de una clase. Pero además: Las funciones se pueden representar como tipos dentro del propio lenguaje. Para representar una función como tipo lo haremos con la forma `(parámetro1, parámetro2) -> tipoDeRetorno`. Si no hay argumentos de entrada, igualmente si tienen que poner los paréntesis vacíos. Y si no hay resultado de salida, se utiliza `Unit`.
+
+- Una función en Kotlin siempre devuelve algo, aun que sea `Unit`.
+
+- El valor de retorno de una lambda es el valor de retorno de la última expresión, expresión que esté en la última linea.
+
+```
+	val f: (Int, Int) -> Int = { x, y ->
+		val z = x + y
+		z
+	}
+```
+O mejor escrito:
+
+```
+	val f: (Int, Int) -> Int = { x, y -> x + y}
+```
+
+- Para llamar a una expresión de este tipo:
+```
+	f(2, 3) // 5
+	f.invoke(2, 3) // 5
+```
+
+- La misma función se puede escribir de la siguiente forma, donde Kotlin infiere el tipo de salida.
+```
+val f = { x: Int, y: Int -> x + y}
+```
+
+- Podemos pasar esta función por parámetro a otra función:
+
+```
+fun doOperation(x: Int, y: Int, op: (Int, Int) -> Int) = op(x, y)
+
+doOperation(2, 3, f) // 5
+doOperation(5, 7, {x, y -> x * y}) // 35
+doOperation(5, 7) {x, y -> x * y} // 35
+```
+- Cuando el último parámetro de una función es una lambda, podemos sacarla de los paréntesis y poner el bloque de código detrás.
+
+- Dentro de una función cuando utilizamos la palabra reservada `it` se va a referir al único argumento que tenga la función:
+```
+val f2: (Int) -> Int = {it * it}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
