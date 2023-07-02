@@ -426,13 +426,86 @@ O mejor escrito:
 	```
 
 
+## Scope Functions:
 
+- Estas funciones nos permiten definir a partir de una variable, un ámbito, donde esa variable va a ser la máxima protagonista. Por ejemplo dado el siguiente código:
+	```
+	val strBuilder = StringBuilder()
+	strBuilder.append("Hello")
+	strBuilder.append(" ")
+	strBuilder.append("World")
+	val str = strBuilder.toString()
+	```
+	Se podría simplificar de la siguiente manera:
 
+	```
+	val strBuilder = StringBuilder()
+	val res = with(strBuilder) {
+		append("Hello")
+		append(" ")
+		append("World")
+		toString()
+	}
+	```
+	El `with` nos permite devolver el valor de la última linea, la última expresión.
 
+- Incluso podríamos hacer la instanciación dentro del `with`.
+	```
+	val res = with(StringBuilder()) {
+		append("Hello")
+		append(" ")
+		append("World")
+		toString()
+	}
+	```
 
+- Existe otra función muy parecida al `with` que es más recomendado utilizar cuando estamos devolviendo un valor. Es la función `run`, que es una función de extensión que se puede aplicar a cualquier objeto.
+	```
+	val res = StringBuilder().run {
+		append("Hello")
+		append(" ")
+		append("World")
+		toString()
+	}
+	```
 
+- Si queremos devolver el objeto que hemos estado inicializando, y no uno nuevo, podríamos utilizar la palabra reservada `this`. Pero esto no es del todo correcto ya que tenemos otras funciones que hacen esto precisamente, como por ejemplo la función `apply`. Los dos bloques de código a continuación son equivalentes, pero el segundo es más correcto.
+	```
+	val myBuilder = StringBuilder().run {
+		append("Hello")
+		append(" ")
+		append("World")
+		this
+	}
+	```
+	```
+	val myBuilder = StringBuilder().apply {
+		append("Hello")
+		append(" ")
+		append("World")
+	}
+	```
 
+- La función let nos devuelve un objeto como `it` en caso de que este no sea `null`. Las dos lineas de código siguientes son equivalentes.
+	```
+	str?.take(3)?.reversed()?.let { println(it) }
+	str?.take(3)?.reversed()?.let(::println)
+	```
 
+- También tenemos una función llamada `also` que nos permite ejecutar acciones laterales. Por ejemplo en el caso anterior:
+	```
+	str?.take(3)?.reversed()?.let(::myFun).also {
+		println(it)
+	}
+	```
+	También la podemos convertir en referencia:
+	```
+	str?.take(3)?.reversed()?.let(::myFun).also(::println)
+	```
+
+![scope fun resumen](./images/scope_fun_kotlin.png)
+
+![scope fun cheat sheet](./images/scope_fun_usage.png)
 
 
 
