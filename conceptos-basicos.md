@@ -292,7 +292,7 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 
 	```	
 También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
-```
+	```
 	when {
 		x is Int -> {
 			"Hello"
