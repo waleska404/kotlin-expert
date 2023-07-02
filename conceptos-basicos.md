@@ -409,8 +409,21 @@ O mejor escrito:
 	```
 
 
+## Extension Functions:
 
+- Las funciones de extensión nos van a permitir extender la funcionalidad de una clase sin necesidad de modificar su código original. 
+	```
+	fun String.take3FirstChars() = this.take(3)
 
+	val myStr = "hello"
+	myStr.take3FirstChars()
+
+	```	
+
+- La palabra reservada `this` se refiere al objeto sobre el que estamos actuando. Esta se puede omitir y la función quedaría de la siguiente forma:
+	```
+	fun String.take3FirstChars() = take(3)
+	```
 
 
 
