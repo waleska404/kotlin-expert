@@ -575,8 +575,57 @@ O mejor escrito:
     ```
 
 
+## Delegación de Propiedades:
 
+- Esto nos puede servir para cuando queremos hacer una implementación de `getters` y `setters` (y no dejar la implementación por defecto que accede al `backing field`), pero la implementación es muy similar en varias propiedades, la delegación de propiedades nos permite no tener que repetir tanto código.
 
+Consiste en que en vez de crear nuestra propia implementación del `getter` y del `setter` de una propiedad, delegar esa implementación en otro objeto. De tal forma que sea ese objeto el que se encargue de recibir las acciones cuando estamos trabajando con la propiedad. De esta forma podemos abstraer el código y reutilizarlo en varias partes de la aplicación.
+
+- El delegado más habitual dentro de los que nos da Kotlin por defecto es `lazy`. Este nos va a permitir retrasar la instanciación de un objeto hasta el momento en el que lo utilicemos. En caso de tener un objeto pesado que no vamos a utilizar en la mayoría de los casos, `lazy` nos permite que esa instanciación no se lleve a cabo hasta el momento de utilizarlo. También puede ser que necesitemos algunos elementos extra que todavía no estén preparados en el momento de la definición de la propiedad, pero más adelante si que tengamos toda la información.
+
+- En el siguiente ejemplo, hasta que no intentemos acceder mediante el `getter` a la propiedad `db` no se va a ejecutar el bloque de código dentro del `lazy`.
+	```
+	class Database {
+		fun save() {}
+	}
+
+	class MyClass {
+		private val db by lazy { Database() }
+		fun save() {
+			db.save()
+		}
+	}
+
+	val obj = MyClass() // todavía no se ha creado el objeto de la base de datos
+	obj.save() // ya se ha creado la base de datos
+
+	```	
+
+- Otro delegado es el `observable`, que va a observar los cambios en la propiedad, nos va a devolver el valor antiguo y el valor nuevo, y nos va a permitir hacer con ellos lo que queramos. El `observable` siempre ocurre después de haber hecho la asignación, por tanto, el valor ya es efectivo, pero también nos devuelve el valor antiguo por si lo queremos utilizar para algo.
+	```
+	class MyClass {
+		var x: Int by Delegates.observable(0) { property, oldValue, newValue ->
+			println("oldValue: $oldValue, newValue: $newValue")
+		}
+	}
+
+	val obj = MyClass()
+	obj.x = 4 // se ejecutará el println
+
+	```	
+El `observable` nos pide como argumento el valor inicial, y en el bloque de código escribiremos lo que tenga que suceder cuando ese valor cambie. Esa función recibe 3 argumentos: la `property`: se refiere a la propiedad que está llamando el delegado, por si estamos reutilizando la instancia; el `oldValue`: el valor que existía antes de la asignación, y el `newValue`: el valor actual de la propiedad.
+
+- El delegado `vetoable` lo que nos va a permitir es vetar la asignación de un valor. Ocurre justo antes de que se asigne el valor, y nos permite decidir si ese valor se almacena o no, devolviendo en la función `true` o `false`. En el siguiente ejemplo ponemos la condición de que el nuevo valor solo se asignará si es positivo.
+	```
+	class MyClass {
+		var positiveInt: Int by Delegates.vetoable(0) { _, _, newValue ->
+			newValue >= 0
+		}
+	}
+
+	```
+
+El `vetoable` nos pide por argumento el valor inicial. Y dentro del bloque de código escribimos la condición que se tiene que dar para que el valor pueda ser asignado. Esta condición tiene que ser booleana. Para ello también tenemos los argumentos `property`, `oldValue` y `newValue`. 
 
 
 
