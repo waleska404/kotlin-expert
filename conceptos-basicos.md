@@ -509,6 +509,80 @@ O mejor escrito:
 
 
 
+## Objects:
+
+- Los objetos son un tipo especial de clases en Kotlin. Son clases que tienen una única instancia. Algo así como el equivalente al patrón Singleton. Como el objeto solo tiene una instancia, no existe un constructor, y si necesitas que ese objecto tenga ciertas dependencias y por tanto constructor, será necesario construir el patrón Singleton a mano, la clase especial `Object` no valdría.
+
+
+- Imaginemos que queremos crear una clase `Database` unica en la aplicación. Cuando creamos el object ya no se pueden crear más instancias de ese tipo, solo se creará una, y lo hará automáticamente el sistema cuando la necesite.
+	```
+	object Database {
+		private val items = mutableListOf<Int>()
+		fun getAll(): List<Int> = items
+		fun save(value: Int) {
+			items.add(value)
+		}
+	}
+
+	Database.save(2)
+	Database.save(3)
+	Database.getAll()
+	```
+
+- También podríamos usarlo en el caso de necesitar un objeto dinámico, un objeto que solo va a existir en el contexto en el que se instancia. (Para mejorar la legibilidad?)
+	```
+	val obj = object {
+		val x = 20
+		val y = "hello"
+	}
+
+	obj.x
+	obj.y
+    ```
+
+- El siguiente caso es cuando queremos que un objeto implemente una interfaz. Sería el equivalente a una clase anónima de Java. En el ejemplo siguiente, para llamara la función `foo` es necesario implementar el callback de alguna forma. Esta forma podría ser mediante un objeto.
+	```
+	interface Callback {
+		fun invoke()
+	}
+
+	fun foo(callback: Callback) {
+		//...
+	}
+
+	foo(object: Callback {
+		override fun invoke() {
+			TODO("Not yet implemented")
+		}
+	})
+
+	```	 
+
+- El último caso es como `Companion Object`. Este es un objeto que va a acompañar a todas las instancias de una clase. Sería el quivalente a hacer funciones o campos estáticos en otros lenguajes. 
+	```
+	companion object {
+        private const val TAG = "AreaAlertMapViewModel"
+    }
+    ```
+
+- En Kotlin no podemos tener más de un `Companion Object` por clase.
+
+- Al `Companion Object` se le puede cambiar el nombre de la siguiente manera.
+	```
+	companion object myCompObj {
+        private const val TAG = "AreaAlertMapViewModel"
+    }
+    ```
+
+
+
+
+
+
+
+
+
+
 
 
 
