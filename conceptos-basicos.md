@@ -173,7 +173,7 @@
 	val intSet = setOf(6,4,29)  
 	```
 
-Es importante tener en cuenta que si lo que contiene el set es una `Data Class` va a entender como elementos iguales aquellos que tengan los mismos valores en sus propiedades. Pero si lo que contiene el set son objetos, es decir `Class`, el equals no funciona de esta manera, y aunque no dos objetos tengan los mismos valores en sus propiedades, serán tratados como objetos diferentes ya que son instancias diferentes.
+	Es importante tener en cuenta que si lo que contiene el set es una `Data Class` va a entender como elementos iguales aquellos que tengan los mismos valores en sus propiedades. Pero si lo que contiene el set son objetos, es decir `Class`, el equals no funciona de esta manera, y aunque no dos objetos tengan los mismos valores en sus propiedades, serán tratados como objetos diferentes ya que son instancias diferentes.
 
 - También tenemos mapas: `Map`.  
 
@@ -210,7 +210,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	}
 
 	val myShape: Shape = Shape.OVAL
-
 	```
 
 - Todo enumerado tiene un valor ordinal que representa la posición del enumerado. 
@@ -223,7 +222,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 
 	val allValues = Shape.values() // allValues es una Array con todos los shapes
 	val squareFromString = Shape.valueOf("SQUARE") // tendremos SQUARE de tipo Shape almacenado en squareFromString (tipo Shape)
-
 	```
 
 - También podríamos añadir información extra a cada uno de los elementos de la enum class. Dichos valores son estáticos.
@@ -241,7 +239,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 
 	shape.id // 10
 	shape.name // square 
-
 	```
 
 ## Rangos:
@@ -278,7 +275,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 	} else {
 		"goodbye"
 	}
-
 	```
 
 - El operador `when` sería el equivalente al `switch` de java. Nos pertmite hacer varias bifurcacioens basadas en el valor de un elemento. Este oprador también puede actuar como una expresión si queremos.
@@ -289,7 +285,6 @@ Es importante tener en cuenta que si lo que contiene el set es una `Data Class` 
 		2 -> "Bye"
 		else -> "end"
 	}
-
 	```	
 También se puede utilizar sin argumento. En la condición se pueden utilizar llaves.
 	```
@@ -321,7 +316,6 @@ También se puede utilizar sin argumento. En la condición se pueden utilizar ll
 	Note("Hello") // descripción vacía y tipo PHOTO
 	Note("Hello", "Description") // tipo PHOTO
 	Note("Hello", "Description", Note.Type.AUDIO)
-
 	```
 
 - Ahora en caso de que queramos omitir el segundo parametro pero no el tercero, en vez de tener que poner el segundo a mano, podemos utilizar los named arguments.
@@ -417,7 +411,6 @@ O mejor escrito:
 
 	val myStr = "hello"
 	myStr.take3FirstChars()
-
 	```	
 
 - La palabra reservada `this` se refiere al objeto sobre el que estamos actuando. Esta se puede omitir y la función quedaría de la siguiente forma:
@@ -555,7 +548,6 @@ O mejor escrito:
 			TODO("Not yet implemented")
 		}
 	})
-
 	```	 
 
 - El último caso es como `Companion Object`. Este es un objeto que va a acompañar a todas las instancias de una clase. Sería el quivalente a hacer funciones o campos estáticos en otros lenguajes. 
@@ -598,7 +590,6 @@ Consiste en que en vez de crear nuestra propia implementación del `getter` y de
 
 	val obj = MyClass() // todavía no se ha creado el objeto de la base de datos
 	obj.save() // ya se ha creado la base de datos
-
 	```	
 
 - Otro delegado es el `observable`, que va a observar los cambios en la propiedad, nos va a devolver el valor antiguo y el valor nuevo, y nos va a permitir hacer con ellos lo que queramos. El `observable` siempre ocurre después de haber hecho la asignación, por tanto, el valor ya es efectivo, pero también nos devuelve el valor antiguo por si lo queremos utilizar para algo.
@@ -611,7 +602,6 @@ Consiste en que en vez de crear nuestra propia implementación del `getter` y de
 
 	val obj = MyClass()
 	obj.x = 4 // se ejecutará el println
-
 	```	
 El `observable` nos pide como argumento el valor inicial, y en el bloque de código escribiremos lo que tenga que suceder cuando ese valor cambie. Esa función recibe 3 argumentos: la `property`: se refiere a la propiedad que está llamando el delegado, por si estamos reutilizando la instancia; el `oldValue`: el valor que existía antes de la asignación, y el `newValue`: el valor actual de la propiedad.
 
