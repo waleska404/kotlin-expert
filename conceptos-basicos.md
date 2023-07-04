@@ -623,15 +623,50 @@ El `observable` nos pide como argumento el valor inicial, y en el bloque de cód
 		}
 	}
 
+	val obj = MyClass()
+	obj.positiveInt = 3 // se asigna
+	obj.positiveInt = 5 // no se asignará
 	```
 
 El `vetoable` nos pide por argumento el valor inicial. Y dentro del bloque de código escribimos la condición que se tiene que dar para que el valor pueda ser asignado. Esta condición tiene que ser booleana. Para ello también tenemos los argumentos `property`, `oldValue` y `newValue`. 
 
+- Para hacer una inicialización tardía podríamos utilizar el delegado `notNull`:
+	```
+	class MyClass {
+		var lateInitialization: String by Delegates.notNull()
+	}
 
+	val obj = MyClass()
+	obj.lateInitialization // lanzaría una excepción
+	obj.lateInitialization = "Hello" 
+	obj.lateInitialization // devuelve "Hello"
+	```
+- Hay una mejor manera de hacer esta inicialización tardía y es con la palabra reservada `lateinit`:
+	```
+	class MyClass {
+		lateinit var lateInitialization: String
+	}
 
+	val obj = MyClass()
+	obj.lateInitialization // lanzaría una excepción
+	obj.lateInitialization = "Hello" 
+	obj.lateInitialization // devuelve "Hello"
+	```
+- `lateinit` nos permite comprobar si la variable se ha inicializado o no, pero lo tenemos que hacer en el contexto donde este `lateinit` se haya implementado.
+	```
+	class MyClass {
+		lateinit var lateInitialization: String
 
+		fun f() {
+			if(::lateInitialization.isInitialized) {
+				//...
+			}
+		}
+	}
+	```
+- Normalmente es mejor utilizar `lateinit` que el delegado `notNull`, pero hay algunos casos en los que `lateinit` no está permitido. Uno de ellos es si la variable es nulable. Ej: `myVar: String?`. Y el otro caso es si el tipo es básico, como por ejemplo `Int` o `Double`.
 
-
+- Desde hace algunas versiones de Kotlin, también se puede utilizar delegación en variables locales, no solo en propiedades de clases.
 
 
 
