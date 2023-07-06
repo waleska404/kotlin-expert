@@ -45,7 +45,7 @@ fun test() {
 	}
 }
 
-// PSEUDOCODE SOLUCIÓN AL AL CALLBACK HELL
+// PSEUDOCODE SOLUCIÓN AL CALLBACK HELL
 coroutine {
 	val user = suspended { userService.doLogin("user", "pass") }
 	val currentFriends = suspended { userService.requestCurrentFriends(user) }
@@ -54,4 +54,58 @@ coroutine {
 }
 ```
 
-## Clases:
+## Funciones Suspend:
+
+- Funciones que nos permiten suspender el ciclo de ejecución de la corrutina, para que esta espere a que el resultado esté listo y poder utilizarlo en la siguiente linea. 
+
+- Podemos convertir cualquier función en suspendida añadiendo delante la palabra reservada `suspend`.
+
+- Una regla de las funciones suspendidas es que para que tenga sentido marcar una función como `suspend`, debe utilizar otra función suspend dentro.
+
+- El ejemplo inicial con funciones suspend quedaría de la siguiente manera. (El interior de las funciones todavía es fake):
+```
+data class User(val name: String, val friends: List<User>)
+
+class UserService {
+
+	suspend fun doLogin(user: String, pass: String) {
+		// Server request
+		return User("Maikela")
+	}
+
+	suspend fun requestCurrentFriends(user: User) {
+		// Server request
+		return listOf(User("1"), User("2"))
+	}
+
+	suspend fun requestSuggestedFriends(user: User) {
+		// Server request
+		return listOf(User("3"), User("4"))
+	}
+}
+
+// PSEUDOCODE SOLUCIÓN AL CALLBACK HELL
+coroutine {
+	println("Starting")
+	val user = userService.doLogin("user", "pass") 
+	val currentFriends = userService.requestCurrentFriends(user) 
+	val finalUser = user.copy(friends = currentFriends)
+	println(finalUser)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
