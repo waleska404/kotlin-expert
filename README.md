@@ -14,5 +14,5 @@
 	- 100% interoperable con Java.
 
 
-[2. CONCEPTOS BÁSICOS](./conceptos-basicos.md)
-[2. CORRUTINAS](./corrutinas.md)
+[2. CONCEPTOS BÁSICOS](./conceptos-basicos.md)   
+[3. CORRUTINAS](./corrutinas.md)
