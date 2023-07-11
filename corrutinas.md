@@ -151,6 +151,8 @@
 
 ## Builders y Jobs:
 
+(dependencias -> implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.3"))
+
 - El `Builder` es el que nos va a permitir crear una corrutina para luego poder llamar a funciones suspend dentro de ella. Existen distintos tipos:
 	- `runBlocking`: Bloquea el hilo de ejecución hasta que el código de dentro del `runBlocking` se haya ejecutado.
 	- `launch`: Es el más importante. No nos va a bloquear el hilo principal (si utilizamos el `dispatcher` adecuado. Para llamar a este `Builder` necesitaremos un `Scope`.
@@ -170,17 +172,127 @@
 		```
 	- `async`: Este constructor no puede vivir por si mismo, tiene que ser llamado dentro de otro constructor, habitualmente `launch`. Cuando generamos una corrutina con este builder, lo que ocurre es que en ese momento, la ejecución no se queda detenida esperando, sino que automáticamente pasa a ejecutarse la linea siguiente. Este `async` devuelve un job especial de tipo `Deferred` que tiene una función `await()`y es cuando llamemos a esta función que nos vamos a quedar suspendidos esperando el resultado.
 
+	En el ejemplo siguiente las funciones que llaman `currentFriends` y `suggestedFriends` se ejecutan secuencialmente, pero una no necesita el resultado de la otra, por tanto podríamos hacer que se ejecuten en paralelo.
+		```		
+		fun test () {
+
+			val userService = UserService()
+
+			val job = GlobalScope.launch(Dispatchers.Main) {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = userService.requestCurrentFriends(user)
+				val suggestedFriends = userService.requestSuggestedFriends(user) 
+				val finalUser = user.copy(friends = currentFriends + suggestedFriends)
+				println(finalUser)
+			}
+		}	
+		```
+	Podemos paralelizar la ejecución de las dos funciones de la siguiente manera:
+		```		
+		fun test () {
+
+			val userService = UserService()
+
+			val job = GlobalScope.launch(Dispatchers.Main) {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = async { userService.requestCurrentFriends(user) } // currentFriends: Deferred<List<User>>
+				val suggestedFriends = async { userService.requestSuggestedFriends(user) } // suggestedFriends: Deferred<List<User>>
+				val finalUser = user.copy(friends = currentFriends.await() + suggestedFriends.await())
+				println(finalUser)
+			}
+		}	
+		```
+
 - Las funciones `launch` siempre devuelven un `Job` con el que podremos hacer diferentes operaciones:
 	- `job.join()`: Permite hacer que otra corrutina espere a que esta acabe (la del job) antes de seguir avanzando en la ejecución del código.
 	- `job.cancel()`: Cancelar todas las corrutinas asociadas a este job, de tal forma que su código no siga ejecutándose.
 
 
 
+## Scopes:
 
+- Cuando ejecutamos una corrutina es importante definir en qué ámbito queremos que se ejecute y en qué ámbito aplica, de tal forma que no se exceda de esos límites de ejecución. Por ejemplo, si una petición que estamos haciendo en la aplicación, solo tiene sentido mientras una pantalla está abierta. Si el usuario cambia de pantalla, y la ejecución termina e intenta actualizar unos componentes que ya no existen, es posible que se lance una excepción.
 
+- `Global Scope`: va a estar activo durante todo el tiempo de vida de la aplicación.
 
+- Para crear un `scope` lo podemos hacer de la siguiente manera, implementado la interfaz CoroutineScope: 
+		```		
+		fun test () {
 
+			val coroutineScope = object: CoroutineScope {
 
+				val job = Job()
+
+				override val coroutineContext: CoroutineContext
+					get() = Dispatchers.Main + Job
+			}
+
+			val userService = UserService()
+
+			coroutineScope.launch {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = async { userService.requestCurrentFriends(user) } // currentFriends: Deferred<List<User>>
+				val suggestedFriends = async { userService.requestSuggestedFriends(user) } // suggestedFriends: Deferred<List<User>>
+				val finalUser = user.copy(friends = currentFriends.await() + suggestedFriends.await())
+				println(finalUser)
+			}
+
+			coroutineScope.job.cancel()
+		}	
+		```
+
+- Deberíamos llamar a `coroutineScope.job.cancel()` cuando el ciclo de vida del componente asociado a este scope, finalize.
+
+- También podríamos hacer que una clase que se encarga de otro tipo de cosas, extienda de CoroutineScope y también gestione toda esa parte, por ejemplo una Activity.
+
+- Cuando estamos trabajando con UI, es más interesante utilizar `SupervisorJob` en vez de `Job`. El `Job` se cancela cuando alguna de las operaciones de la corrutina falla, y por tanto, perdemos el resto de operaciones que se pueden estar ejecutando (todos los `jobs` hijos, se cancelan). En cambio en los `SupervisorJob` esto no ocurre, y si una operación falla no quiere decir que todas las demás se cancelen.
+		```		
+		fun test () {
+			val coroutineScope = object: CoroutineScope {
+
+				val job = SupervisorJob()
+
+				override val coroutineContext: CoroutineContext
+					get() = Dispatchers.Main + Job
+			}
+
+			val userService = UserService()
+
+			coroutineScope.launch {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = async { userService.requestCurrentFriends(user) } // currentFriends: Deferred<List<User>>
+				val suggestedFriends = async { userService.requestSuggestedFriends(user) } // suggestedFriends: Deferred<List<User>>
+				val finalUser = user.copy(friends = currentFriends.await() + suggestedFriends.await())
+				println(finalUser)
+			}
+
+			coroutineScope.job.cancel()
+		}	
+		```
+
+- Si queremos un `CoroutineScope` que trabaje sobre el hilo principal, ya existe un objeto que podemos utilizar: `MainScope`. Este objeto está implementado con un `SupervisorJob` y un `Dispatchers.Main`:
+		```		
+		fun test () {
+			val coroutineScope = MainScope()
+
+			val userService = UserService()
+
+			coroutineScope.launch {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = async { userService.requestCurrentFriends(user) } // currentFriends: Deferred<List<User>>
+				val suggestedFriends = async { userService.requestSuggestedFriends(user) } // suggestedFriends: Deferred<List<User>>
+				val finalUser = user.copy(friends = currentFriends.await() + suggestedFriends.await())
+				println(finalUser)
+			}
+
+			coroutineScope.coroutineContext.job.cancel()
+		}	
+		```
 
 
 
