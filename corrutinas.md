@@ -149,6 +149,60 @@
 	- `Uncofined`: Se usaba antes para testing pero ya casi no se utiliza. Lo que hace es que cuando vuelve de una petición, no necesariamente vuelve al hilo original de la corrutina sino que alomejor se queda en el hilo que la llamó. De esta forma no hay saltos entre hilos, ni entre dispatchers. 
 
 
+## Builders y Jobs:
+
+- El `Builder` es el que nos va a permitir crear una corrutina para luego poder llamar a funciones suspend dentro de ella. Existen distintos tipos:
+	- `runBlocking`: Bloquea el hilo de ejecución hasta que el código de dentro del `runBlocking` se haya ejecutado.
+	- `launch`: Es el más importante. No nos va a bloquear el hilo principal (si utilizamos el `dispatcher` adecuado. Para llamar a este `Builder` necesitaremos un `Scope`.
+		```		
+		fun test () {
+
+			val userService = UserService()
+
+			val job = GlobalScope.launch(Dispatchers.Main) {
+				println("Starting")
+				val user = userService.doLogin("user", "pass") 
+				val currentFriends = userService.requestCurrentFriends(user) 
+				val finalUser = user.copy(friends = currentFriends)
+				println(finalUser)
+			}
+		}	
+		```
+	- `async`: Este constructor no puede vivir por si mismo, tiene que ser llamado dentro de otro constructor, habitualmente `launch`. Cuando generamos una corrutina con este builder, lo que ocurre es que en ese momento, la ejecución no se queda detenida esperando, sino que automáticamente pasa a ejecutarse la linea siguiente. Este `async` devuelve un job especial de tipo `Deferred` que tiene una función `await()`y es cuando llamemos a esta función que nos vamos a quedar suspendidos esperando el resultado.
+
+- Las funciones `launch` siempre devuelven un `Job` con el que podremos hacer diferentes operaciones:
+	- `job.join()`: Permite hacer que otra corrutina espere a que esta acabe (la del job) antes de seguir avanzando en la ejecución del código.
+	- `job.cancel()`: Cancelar todas las corrutinas asociadas a este job, de tal forma que su código no siga ejecutándose.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
