@@ -295,11 +295,52 @@
 		```
 
 
+## Secuencias:
+
+- Las secuencias se diferencian del resto de colecciones en que son un tipo de colecciones `lazy`. Esto quiere decir que en vez de contener una serie de objetos ya disponibles desde el principio, estos objectos no se calculan hasta el momento en que realmente se necesitan. Los objetos dentro de la colección se van creando según se necesitan. 
+
+- Una ventaja de esta característica, es que las secuencias pueden ser infinitas. 
+
+- Otra de las ventajas es que nos permite evitar pasos intermedios. A diferencia del resto de colecciones, cuando una secuencia realiza varias operaciones (map, filter, etc.), estas se aplican en cadena, en los objectos de uno en uno, en vez de crear una nueva colección intermedia entre cada una de las operaciones.
+
+- Diferentes maneras de crear una secuencia:
+	```
+	// sequenceOf builder
+	val sequence = sequenceOf("one", "two", "three")
+
+	// desde una lista
+	val list = listOf("one", "two", "three")
+	val sequenceFromList = list.asSequence()
+
+	// a partir de una semilla y una función
+	val sequenceFromSeed = generateSequence(2) { it * 2 }
+
+	// por ejemplo para coger las potencias de 2 menores que 10000
+	generateSequence(2) { it * 2 }
+		.takeWhile { it < 10_000 }
+		.toList()
+
+	// bloque sequence
+	sequence {
+		yield(3)
+		yieldAll(listOf(4, 20, 25))
+		yieldAll(generateSequence(2) { it * 2 }.takeWhile { it < 10_000 })
+	}.toList()
+	```	
+
+- Tenemos dos tipos de operaciones en función del estado: 
+	- `Stateless`: Operaciones que no necesitan estado intermedio para calcular sus valores, o necesitan una cantidad muy pequeña y constante. Ej: Map, Filter, Take, Drop...
+	- `Statefull`: Operaciones que requieren una gran cantidad de memoria para procesarse. Normalmente proporcional al numero de elementos de la secuencia. Ej: Sorted, Distinct, Chunked... 
 
 
+- Otra clasificación de las operaciones es un función de si generan una nueva secuencia o pueden calcular el resultado directamente:
+	- `Intermediate`: Al aplicarla devuelve como resultado una nueva secuencia. Esta nueva secuencia no necesita calcular aún los valores.
+	- `Terminal`: Estas ya necesitan todos los valores de la secuencia y por tanto van a tener que iterar sobre todos los elementos de la secuencia. Ej: toList, sum... 
 
+- Las operaciones `terminales` TODAS son `Statefull`. Van a generar una nueva colección pasando por todos los elementos de la lista.
 
-
+- Para saber de qué tipo es la operación, podemos hacer `command + click` para entrar en la implementación y en la definición de lo indica: 
+	![scope fun cheat sheet](./images/fun_type.png)
 
 
 
