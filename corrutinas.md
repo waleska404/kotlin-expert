@@ -343,7 +343,22 @@
 	![scope fun cheat sheet](./images/fun_type.png)
 
 
+## Flows:
 
+- Los `Flows` en Kotlin, son una funcionalidad que nos provee la librería de corrutinas, para implementar la programación reactiva. La idea de la programación reactiva es que cuando un valor cambia, en vez de tener que ir a buscar esa actualización de la información, suscribirse a un componente que nos va a informar de forma automática.
+
+- La programación reactiva está montada sobre el patrón `Observer`. El patrón observer consite en tener una clase, que podemos llamar el `observable`, que va a estar emitiendo valores y que permite a `observers` suscribirse, para ir obteniendo actualizaciones de esos valores.
+
+- Los `Flows` son secuencias asíncronas. Igual que las secuencias, solo que los elementos no se calculan de manera síncrona. Los valores del flow pueden ser peticiones a un servidor o BD y podemos quedarnos suspendidos esperando a esos valores. Lo que quiere decir que las operaciones terminales no reciben todos los valores a la vez, sino que también se quedarán suspendidas esperando a que se reciban nuevos valores.
+
+- Los `Flows` como las secuencias, son `lazy`. Lo que quiere decir que hasta que no haya alguien que requiera los valores del `flow`, las operaciones que hay en ellos no se ejecutan. (En los `flows` por defecto). Por esto se les llama `cold streams`.
+
+- Por defecto, si otro elemento se conecta al `flow`, este empieza a emitir los valores desde el principio, desde el primer valor del flujo. 
+
+- Los `Flows` son secuenciales. Esto quiere decir que si por ejemplo un `flow` va a generar X elementos y cada uno de ellos realiza una operación pesada o que tarda mucho tiempo, se van a ejecutar unos detrás de otros y hasta que el anterior no acabe, no va a empezar el siguiente.
+
+- Existen tres formas de crear `flows`:
+	- 
 
 
 
