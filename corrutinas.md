@@ -358,7 +358,14 @@
 - Los `Flows` son secuenciales. Esto quiere decir que si por ejemplo un `flow` va a generar X elementos y cada uno de ellos realiza una operación pesada o que tarda mucho tiempo, se van a ejecutar unos detrás de otros y hasta que el anterior no acabe, no va a empezar el siguiente.
 
 - Existen tres formas de crear `flows`:
-	- 
+	- `val result = flowOf(1, 2, 3, 4)`
+	- `val result = listOf(1, 2, 3, 4).asFlow()`
+	- ```
+		val res = flow {
+			emit(1)
+			emit(2)
+		}
+	```
 
 
 
