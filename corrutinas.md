@@ -465,21 +465,41 @@
 	}
 	```
 
+## StateFlow:
 
+- Este flow es tipo `hot` o caliente, a diferencia de los flows por defecto (cold o fríos). En los flows calientes los valores se van a ir emitiendo independientemente de que haya alguien escuchando.
 
+- Lo que va a hacer `StateFlow` es almacenar el último valor que ha emitido, independientemente de que haya habido alguien escuchándolo o no.
 
+- Cuando nos suscribimos a este flow, nos va a devolver automáticamente el último valor emitido si es que había alguno. Y a partir de ese momento, cuando se emitan nuevos valores, los recibiremos automáticamente.
 
+- En general, el `StateFlow` se utiliza para almacenar un estado, y que este estado se pueda consumir de manera reactiva.
 
+- Ejemplo:
+	```
+	class ViewModel {
+	    private val _state: MutableStateFlow<Note> = MutableStateFlow(Note("Title 1", "Description 1", Note.Type.TEXT))
+	    val state = _state.asStateFlow()
+	    suspend fun update() {
+	        var count = 1
+	        while (true) {
+	            delay(2000)
+	            count++
+	            _state.value = Note("Title $count", "Description $count", Note.Type.TEXT)
+	        }
+	    }
+	}
 
-
-
-
-
-
-
-
-
-
+	fun main(): Unit = runBlocking {
+	    val viewModel = ViewModel()
+	    launch {
+	        viewModel.update()
+	    }
+	    viewModel.state.collect {
+	        println(it)
+	    }
+	}
+	```
 
 
 
