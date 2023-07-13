@@ -367,6 +367,107 @@
 		}
 	```
 
+- En cuanto a las operaciones que podemos ejecutar con los `flows` pasa lo mismo que con las secuencias, hay dos tipos:
+	- `Operaciones intermedias`: A partir de un `flow` nos van a dar otro `flow`. Ej: map, filter...
+	- `Operaciones terminales`: Van a ejecutar el propio `flow`. Si tiene `emits` se ejecutarán, y la operación esparara a todos los valores del flow, y después se ejecutará. Ej: collect, toList
+
+- Los `flows` tienen ciertas restricciones respecto a los `contextos` y las `excepciones` para conservar la estabilidad del sistema de `flows`.
+	- Dentro de un `flow` no podemos cambiar de contexto. Por ejemplo, el siguiente bloque de código lanzaría una excepción del tipo `Flow invariant is violated`. Porque el `flow` se ha emitido en un dispatcher, y la recolección está sucediendo en otro dispatcher.
+	```
+	fun main(): Unit = runBlocking {
+
+	    val myFlow = flow {
+	        withContext(Dispatchers.IO) {
+	            emit(2)
+	        }
+	    }
+
+	    myFlow.collect {
+	        println(it)
+	    }
+	}
+	```	
+	El `Flow` siempre va a recolectarse en el contexto, y por tanto en el dispatcher, de la corrutina donde se lanza el `emit (?)`. Esto podemos arreaglarlo con una función llamada `flowOn`, que nos permite cambiar el contexto. Esto hace que sea el consumidor del `flow` el que decide en qué dispatcher debe ejecutarse:
+	```
+	fun main(): Unit = runBlocking {
+
+	    val myFlow = flow {
+	            emit(2)
+	    }
+
+	    myFlow.flowOn(Dispatchers.IO).collect {
+	        println(it)
+	    }
+	}
+	```	
+	- Respecto a las `excepciones`, no deberíamos hacer un `try` `catch` dentro de un bloque de código que está emitiendo un valor. Para eso tenemos la función `catch` con la que podemos capturar las excepciones.
+	```
+	fun main(): Unit = runBlocking {
+
+	    val myFlow = flow {
+	        emit(2)
+	        throw IllegalStateException("Exception message")
+	    }
+
+	    myFlow
+	        .flowOn(Dispatchers.IO)
+	        .catch { throwable -> println(throwable.message) }
+	        .collect {
+	            println(it)
+	        }
+	}
+	```
+
+- Un par de ejemplos para explorar el funcionamiento de los `flows`:
+	```
+	fun main(): Unit = runBlocking {
+
+	    val res1 = flow {
+	        emit(1)
+	        kotlinx.coroutines.delay(1000)
+	        emit(2)
+	        kotlinx.coroutines.delay(1000)
+	        emit(3)
+	        kotlinx.coroutines.delay(1000)
+	        emit(4)
+	        kotlinx.coroutines.delay(1000)
+	    } .transform {
+	        // esta operación concretamente es equivalente a un filter y un map
+	        // mejor utilizar filter y map si se puede, ya que da mas legibilidad
+	        if(it % 2 == 0) emit("Item $it")
+	    }
+
+	    launch {
+	        res1.collect {
+	            println("launch 1: $it")
+	        }
+	    }
+
+	    launch {
+	        res1.collect {
+	            println("launch 2: $it")
+	        }
+	    }
+
+	}
+	```	
+	```
+	fun main(): Unit = runBlocking {
+
+	    val flow1 = flowOf(1, 2, 3, 4).onEach { delay(300) }
+	    val flow2 = flowOf("a", "b", "c").onEach { delay(500) }
+
+	    println("ZIP ----------------------------")
+	    flow1.zip(flow2) { x, y -> "return string with $x and $y"}.collect {println(it)}
+
+	    println("COMBINE ----------------------------")
+	    flow1.combine(flow2) { x, y -> "return string with $x and $y"}.collect {println(it)}
+	}
+	```
+
+
+
+
 
 
 
