@@ -502,8 +502,45 @@
 	```
 
 
+## SharedFlow:
 
+- Por defecto no almacena ningún valor. Como podemos guardar más de un valor, no igualamos al value, sino que tendremos que utilizar la función `emit`.
 
+- Es como un `StateFlow` pero más configurable. Para hacer esta configuración tenemos tres argumentos:
+	- `replay`: Le indicamos cuantos valores queremos que almacene, para que cuando nos suscribamos al `SharedFlow` nos devuelva esos valores. Si aquí le indicamos un `1`, funcionará exactamente igual que un `StateFlow`.
+	- `extraBufferCapacity`: Con este argumento le indicaremos un espacio extra para emitir a parte de la cantidad indicada en el replay. Cuando se haya llenado la cantidad del replay, y la cantidad del Buffer, el emit se quedará suspendido (o lo que le indiquemos en el tercer argumento) hasta que se haga algún collect que deje espacio para otro emit.
+	- `onBufferOverflow`: Aquí indicaremos que acción va a llevar a cabo cuando se llene el buffer, quedarse suspendido, descartar los valores nuevos, descartar los viejos... Por defecto está configurado como suspend.
+
+- Una diferencia es con `StateFlow` que en el caso de `StateFlow` si se emite un valor exactamente igual que el anterior, no se considera nuevo valor por tanto no se emite. En `SharedFlow` se emite cualquier valor aunque sea igual que el anterior.
+
+- Ejemplo:
+	```
+	class ViewModel {
+	    private val _state: MutableSharedFlow<Note> = MutableSharedFlow(replay = 3, extraBufferCapacity = 3, onBufferOverflow = BufferOverflow.DROP_LATEST)
+	    val state = _state.asSharedFlow()
+	    suspend fun update() {
+	        var count = 1
+	        while (true) {
+	            delay(2000)
+	            count++
+	            _state.emit(Note("Title $count", "Description $count", Note.Type.TEXT))
+	            println("Emitting Title $count")
+	        }
+	    }
+	}
+
+	fun main(): Unit = runBlocking {
+	    val viewModel = ViewModel()
+	    launch {
+	        viewModel.update()
+	    }
+	    delay(2100)
+	    viewModel.state.collect {
+	        delay(1000)
+	        println(it)
+	    }
+	}
+	```
 
 
 
