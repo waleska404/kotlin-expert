@@ -155,7 +155,7 @@
 
 - El `Builder` es el que nos va a permitir crear una corrutina para luego poder llamar a funciones suspend dentro de ella. Existen distintos tipos:
 	- `runBlocking`: Bloquea el hilo de ejecución hasta que el código de dentro del `runBlocking` se haya ejecutado.
-	- `launch`: Es el más importante. No nos va a bloquear el hilo principal (si utilizamos el `dispatcher` adecuado. Para llamar a este `Builder` necesitaremos un `Scope`.
+	- `launch`: Es el más importante. No nos va a bloquear el hilo principal (si utilizamos el `dispatcher` adecuado). Para llamar a este `Builder` necesitaremos un `Scope`.
 		```		
 		fun test () {
 
