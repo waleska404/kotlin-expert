@@ -542,5 +542,8 @@
 	}
 	```
 
+## Channels:
+
+- La principal diferencia de los `Channels` con los `SharedFlows` es que los `Channels` están pensados para que solo tengan un recolector. Mientras que en el `SharedFlow` todos los que escuchen van a recibir los nuevos valors, en el `Channel` si hacemos varios `collects` solo va a ser el más rápido el que reciba la nueva actualización.
 
 
