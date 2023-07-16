@@ -544,6 +544,66 @@
 
 ## Channels:
 
-- La principal diferencia de los `Channels` con los `SharedFlows` es que los `Channels` están pensados para que solo tengan un recolector. Mientras que en el `SharedFlow` todos los que escuchen van a recibir los nuevos valors, en el `Channel` si hacemos varios `collects` solo va a ser el más rápido el que reciba la nueva actualización.
+- La principal diferencia de los `Channels` con los `SharedFlows` es que los `Channels` están pensados para que solo tengan un recolector. Mientras que en el `SharedFlow` todos los que escuchen van a recibir los nuevos valors, en el `Channel` si hacemos varios `collects` solo va a ser el más rápido el que reciba la nueva actualización. Están pensados para que solo haya un recolector.
+
+
+## CallbackFlow:
+
+- Imaginemos que estamos trabajando con una API que no soporta los `flows` y tenemos un `callback` en el que se están emitiendo valores constantemente y tenemos que trabajar con él. Dentro de la librería de corrutinas tenemos una función llamada `CallbackFlow` que nos permite convertir cualquier `callback` en un `flow`.
+
+	```
+	class ViewModel {
+	    fun update(callback: (Note) -> Unit) {
+	        var count = 1
+	        while (true) {
+	            Thread.sleep(500)
+	            callback(Note("Title $count", "Description $count", Note.Type.TEXT))
+	            println("Emitting Title $count")
+	            count++
+	        }
+	    }
+	}
+
+	fun ViewModel.updatesFlow(): Flow<Note> = callbackFlow {
+	    update { trySend(it) }
+	}
+
+	fun main(): Unit = runBlocking {
+	    val viewModel = ViewModel()
+	    launch(Dispatchers.Default) {
+	        viewModel.updatesFlow().collect {
+	            println(it)
+	        }
+	    }
+	}
+	```	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
