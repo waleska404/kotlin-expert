@@ -656,7 +656,7 @@ El `vetoable` nos pide por argumento el valor inicial. Y dentro del bloque de c�
 	```
 - Normalmente es mejor utilizar `lateinit` que el delegado `notNull`, pero hay algunos casos en los que `lateinit` no está permitido. Uno de ellos es si la variable es nulable. Ej: `myVar: String?`. Y el otro caso es si el tipo es básico, como por ejemplo `Int` o `Double`.
 
-- Desde hace algunas versiones de Kotlin, también se puede utilizar delegación en variables locales, no solo en propiedades de clases.
+- Desde hace algunas versiones de Kotlin, también se puede utilizar delegación en variables locales, no solo en propiedades de clases
 
 
 
